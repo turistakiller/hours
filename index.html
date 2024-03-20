@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Hours Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: left;
+            color: #666;
+            position: relative;
+        }
+        .card h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .status-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #00ff00; /* Green */
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Work Hours Dashboard</h1>
+        <div class="card">
+            <h2>Wasley A.</h2>
+            <div class="status-indicator"></div>
+            <p>Position: Software Engineer</p>
+            <p>Status: Active</p>
+            <p>Start Date: Thu, Jan 10, 2024</p>
+            <p>Current Date: <span id="currentDate"></span></p>
+
+        </div>
+        <canvas id="hoursChart"></canvas>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to update current date
+            function updateCurrentDate() {
+                const currentDateElement = document.getElementById('currentDate');
+                const options = { timeZone: 'America/Los_Angeles', weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+                const currentDate = new Date().toLocaleDateString('en-US', options);
+                currentDateElement.textContent = currentDate;
+            }
+
+            // Call the function initially to set the current date
+            updateCurrentDate();
+
+            // Dummy data for demonstration
+            const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']; // Days of the week
+            const hoursWorked = [8, 8, 0, 0, 0]; // Hours worked per day
+            const extraHours = [5, 6, 0, 0, 0]; // Extra hours per day
+            
+            // Calculate total worked hours and extra hours
+            const totalHoursWorked = hoursWorked.reduce((acc, cur) => acc + cur, 0);
+            const totalExtraHours = extraHours.reduce((acc, cur) => acc + cur, 0);
+            
+            // Create color array based on performance
+            const colors = [];
+            hoursWorked.forEach(hour => {
+                if (hour >= 40) {
+                    colors.push('rgba(0, 204, 0, 0.5)'); // Green for excellent performance
+                } else if (hour >= 35) {
+                    colors.push('rgba(255, 204, 0, 0.5)'); // Yellow for good performance
+                } else if (hour >= 30) {
+                    colors.push('rgba(255, 102, 102, 0.5)'); // Red for average performance
+                } else {
+                    colors.push('rgba(204, 204, 204, 0.5)'); // Gray for below-average performance
+                }
+            });
+            
+            // Create the bar chart
+            const ctx = document.getElementById('hoursChart').getContext('2d');
+            const hoursChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: daysOfWeek,
+                    datasets: [{
+                        label: 'Worked Hours',
+                        data: hoursWorked,
+                        backgroundColor: colors, // Dynamically set colors based on performance
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Extra Hours',
+                        data: extraHours,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                } 
+            });
+            
+            // Update the card with total worked hours and extra hours
+            const card = document.querySelector('.card');
+            card.innerHTML += `<p>Total worked hours: ${416}</p>`;
+            card.innerHTML += `<p>Total extra hours: ${208}</p>`;
+        });
+    </script>
+</body>
+</html>
